@@ -62,7 +62,7 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     user: null,
-    loading: false,
+    loading: !!sessionStorage.getItem("token"),
     loginError: null,
     registrationError: null,
     success: false,
@@ -101,8 +101,17 @@ const userSlice = createSlice({
       state.loading = false;
       state.loginError = action.payload;
     })
+    .addCase(loginWithToken.pending, (state) => {
+      state.loading = true;
+    })
     .addCase(loginWithToken.fulfilled, (state, action) => {
+      state.loading = false;
       state.user = action.payload.user;
+    })
+    .addCase(loginWithToken.rejected, (state) => {
+      state.loading = false;
+      state.user = null;
+      sessionStorage.removeItem("token");
     })
   },
 });

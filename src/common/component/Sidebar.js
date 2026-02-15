@@ -11,6 +11,10 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
 
+  if (!user) {
+    return null;
+  }
+
   const handleSelectMenu = (url) => {
     setShow(false);
     navigate(url);

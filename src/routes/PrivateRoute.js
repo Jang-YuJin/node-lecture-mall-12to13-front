@@ -3,23 +3,30 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoute = ({ permissionLevel }) => {
-  const user = useSelector((state) => state.user.user);
-  if(!user){
-    <Navigate to="/login" />;
+  const { user, loading } = useSelector((state) => state.user);
+
+  // Wait for token-based auth restore on refresh.
+  if (loading) {
+    return null;
   }
 
-  if(permissionLevel === 'customer'){
-    return user.lvl === 'customer' ? <Outlet></Outlet> : <Navigate to="/" />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
 
-  if(permissionLevel === 'admin'){
-    return user.lvl === 'admin' ? <Outlet></Outlet> : <Navigate to="/" />;
+  if (permissionLevel === "customer") {
+    return user.lvl === "customer" ? <Outlet /> : <Navigate to="/" replace />;
   }
 
-  if(permissionLevel === 'seller'){
-    return user.lvl === 'seller' ? <Outlet></Outlet> : <Navigate to="/" />;
+  if (permissionLevel === "admin") {
+    return user.lvl === "admin" ? <Outlet /> : <Navigate to="/" replace />;
   }
-  return <Navigate to="/" />;
+
+  if (permissionLevel === "seller") {
+    return user.lvl === "seller" ? <Outlet /> : <Navigate to="/" replace />;
+  }
+
+  return <Navigate to="/" replace />;
 };
 
 export default PrivateRoute;
